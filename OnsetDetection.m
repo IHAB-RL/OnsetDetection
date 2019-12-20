@@ -2,6 +2,7 @@ classdef OnsetDetection < handle
     
     properties
         
+        sPath_Images = 'images';
         hFig;
         vScreenSize;
         hAx1;
@@ -113,7 +114,6 @@ classdef OnsetDetection < handle
         vPeakLoc;
         mThresh_hist;
         
-        
         Zi_fast_lp = 0;
         Zi_slow_lp = 0;
         Zi_fast_bp = 0;
@@ -131,18 +131,15 @@ classdef OnsetDetection < handle
         vOut_LP;
         vOut_BP;
         vOut_HP;
-        
-        bCalculating = true;
-        
-        %         oAxisTimer;
-        
-        
+       
     end
     
     
     methods
         
         function [obj] = OnsetDetection()
+            
+            addpath([pwd, filesep, obj.sPath_Images]);
             
             obj.nEditControls_Height = obj.nButtonViewControl_Height;
             
@@ -255,137 +252,208 @@ classdef OnsetDetection < handle
                 obj.nHeightFig - obj.nViewControl_Height + 1];
             obj.hPanel_Controls.Title = 'Controls';
             
+            
+            
+            nLeft = (obj.hPanel_Controls.Position(3) - obj.nMessageWidth)/2;
+            
+            
             % Tau Slow
+            
+            obj.hText_tauSlow = uilabel(obj.hPanel_Controls);
+            obj.hText_tauSlow.Position = [nLeft, ...
+                1 * obj.nFillControl_Vertical + 1 * obj.nEditControls_Height, ...
+                obj.nMessageWidth, obj.nMessageHeight];
+            obj.hText_tauSlow.Text = 'Tau Slow:';
+            obj.hText_tauSlow.HorizontalAlignment = 'center';
+            obj.hText_tauSlow.FontColor = [0.4, 0.4, 0.4];
+            
             obj.hEdit_tauSlow_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauSlow_WB.Position = [obj.nFillControl_Horizontal, ...
                 obj.nFillControl_Vertical, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauSlow_WB.Value = sprintf('%.2f', obj.vParameter_TauSlow(1));
             obj.hEdit_tauSlow_WB.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauSlow_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_tauSlow_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauSlow_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 obj.nFillControl_Vertical, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauSlow_LP.Value = sprintf('%.2f', obj.vParameter_TauSlow(2));
             obj.hEdit_tauSlow_LP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauSlow_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_tauSlow_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauSlow_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 obj.nFillControl_Vertical, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauSlow_BP.Value = sprintf('%.2f', obj.vParameter_TauSlow(3));
             obj.hEdit_tauSlow_BP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauSlow_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_tauSlow_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauSlow_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 obj.nFillControl_Vertical, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauSlow_HP.Value = sprintf('%.2f', obj.vParameter_TauSlow(4));
             obj.hEdit_tauSlow_HP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauSlow_HP.FontColor = obj.mColor(4, :);
             
             % Tau Fast
+            
+            obj.hText_tauFast = uilabel(obj.hPanel_Controls);
+            obj.hText_tauFast.Position = [nLeft, ...
+                2 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, ...
+                obj.nMessageWidth, obj.nMessageHeight];
+            obj.hText_tauFast.Text = 'Tau Fast:';
+            obj.hText_tauFast.HorizontalAlignment = 'center';
+            obj.hText_tauFast.FontColor = [0.4, 0.4, 0.4];
+            
             obj.hEdit_tauFast_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauFast_WB.Position = [obj.nFillControl_Horizontal, ...
                 2 * obj.nFillControl_Vertical + obj.nEditControls_Height, ...
                 obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauFast_WB.Value = sprintf('%.2f', obj.vParameter_TauFast(1));
             obj.hEdit_tauFast_WB.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauFast_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_tauFast_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauFast_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 2 * obj.nFillControl_Vertical + obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauFast_LP.Value = sprintf('%.2f', obj.vParameter_TauFast(2));
             obj.hEdit_tauFast_LP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauFast_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_tauFast_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauFast_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 2 * obj.nFillControl_Vertical + obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauFast_BP.Value = sprintf('%.2f', obj.vParameter_TauFast(3));
             obj.hEdit_tauFast_BP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauFast_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_tauFast_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_tauFast_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 2 * obj.nFillControl_Vertical + obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_tauFast_HP.Value = sprintf('%.2f', obj.vParameter_TauFast(4));
             obj.hEdit_tauFast_HP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_tauFast_HP.FontColor = obj.mColor(4, :);
             
             % Param 2
+            
+            obj.hText_P2 = uilabel(obj.hPanel_Controls);
+            obj.hText_P2.Position = [nLeft, ...
+                3 * obj.nFillControl_Vertical + 3 * obj.nEditControls_Height, ...
+                obj.nMessageWidth, obj.nMessageHeight];
+            obj.hText_P2.Text = 'Parameter 2:';
+            obj.hText_P2.HorizontalAlignment = 'center';
+            obj.hText_P2.FontColor = [0.4, 0.4, 0.4];
+            
             obj.hEdit_P2_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_WB.Position = [obj.nFillControl_Horizontal, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P2_WB.Value = sprintf('%.2f', obj.vParameter_2(1));
             obj.hEdit_P2_WB.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P2_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_P2_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P2_LP.Value = sprintf('%.2f', obj.vParameter_2(2));
             obj.hEdit_P2_LP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P2_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_P2_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P2_BP.Value = sprintf('%.2f', obj.vParameter_2(3));
             obj.hEdit_P2_BP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P2_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_P2_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P2_HP.Value = sprintf('%.2f', obj.vParameter_2(4));
             obj.hEdit_P2_HP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P2_HP.FontColor = obj.mColor(4, :);
             
             % Param 1
+            
+            obj.hText_P1 = uilabel(obj.hPanel_Controls);
+            obj.hText_P1.Position = [nLeft, ...
+                4 * obj.nFillControl_Vertical + 4 * obj.nEditControls_Height, ...
+                obj.nMessageWidth, obj.nMessageHeight];
+            obj.hText_P1.Text = 'Parameter 1:';
+            obj.hText_P1.HorizontalAlignment = 'center';
+            obj.hText_P1.FontColor = [0.4, 0.4, 0.4];
+            
             obj.hEdit_P1_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P1_WB.Position = [obj.nFillControl_Horizontal, ...
                 4 * obj.nFillControl_Vertical + 3 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P1_WB.Value = sprintf('%.2f', obj.vParameter_1(1));
             obj.hEdit_P1_WB.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P1_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_P1_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P1_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 4 * obj.nFillControl_Vertical + 3 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P1_LP.Value = sprintf('%.2f', obj.vParameter_1(2));
             obj.hEdit_P1_LP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P1_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_P1_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P1_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 4 * obj.nFillControl_Vertical + 3 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P1_BP.Value = sprintf('%.2f', obj.vParameter_1(3));
             obj.hEdit_P1_BP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P1_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_P1_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P1_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 4 * obj.nFillControl_Vertical + 3 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_P1_HP.Value = sprintf('%.2f', obj.vParameter_1(4));
             obj.hEdit_P1_HP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_P1_HP.FontColor = obj.mColor(4, :);
             
             % Base
+            
+            obj.hText_Base = uilabel(obj.hPanel_Controls);
+            obj.hText_Base.Position = [nLeft, ...
+                5 * obj.nFillControl_Vertical + 5 * obj.nEditControls_Height, ...
+                obj.nMessageWidth, obj.nMessageHeight];
+            obj.hText_Base.Text = 'Base:';
+            obj.hText_Base.HorizontalAlignment = 'center';
+            obj.hText_Base.FontColor = [0.4, 0.4, 0.4];
+            
             obj.hEdit_Base_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Base_WB.Position = [obj.nFillControl_Horizontal, ...
                 5 * obj.nFillControl_Vertical + 4 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_Base_WB.Value = sprintf('%.2f', obj.vParameter_ThreshBase(1));
             obj.hEdit_Base_WB.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_Base_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_Base_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Base_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 5 * obj.nFillControl_Vertical + 4 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_Base_LP.Value = sprintf('%.2f', obj.vParameter_ThreshBase(2));
             obj.hEdit_Base_LP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_Base_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_Base_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Base_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 5 * obj.nFillControl_Vertical + 4 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_Base_BP.Value = sprintf('%.2f', obj.vParameter_ThreshBase(3));
             obj.hEdit_Base_BP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_Base_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_Base_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Base_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 5 * obj.nFillControl_Vertical + 4 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hEdit_Base_HP.Value = sprintf('%.2f', obj.vParameter_ThreshBase(4));
             obj.hEdit_Base_HP.ValueChangedFcn = @obj.callbackValueChanged;
+            obj.hEdit_Base_HP.FontColor = obj.mColor(4, :);
             
             % Logistics
             obj.hText_Length = uilabel(obj.hPanel_Controls);
             obj.hText_Length.Position = [1 * obj.nFillControl_Horizontal, ...
                 6 * obj.nFillControl_Vertical + 5 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
             obj.hText_Length.Text = sprintf('Length:');
+            obj.hText_Length.FontColor = [0.4, 0.4, 0.4];
             
             obj.hEdit_Length = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Length.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
@@ -397,6 +465,7 @@ classdef OnsetDetection < handle
             obj.hText_Blocklen.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 6 * obj.nFillControl_Vertical + 5 * obj.nEditControls_Height, obj.nEditControls_Width+10, obj.nEditControls_Height];
             obj.hText_Blocklen.Text = sprintf('Block:');
+            obj.hText_Blocklen.FontColor = [0.4, 0.4, 0.4];
             
             obj.hEdit_Blocklen = uieditfield(obj.hPanel_Controls);
             obj.hEdit_Blocklen.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
@@ -477,6 +546,13 @@ classdef OnsetDetection < handle
                     vPatches(iPatch).delete();
                 end
                 
+                obj.hText_Length.Enable = 'on';
+                obj.hText_Blocklen.Enable = 'on';
+                obj.hText_Base.Enable = 'on';
+                obj.hText_P1.Enable = 'on';
+                obj.hText_P2.Enable = 'on';
+                obj.hText_tauFast.Enable = 'on';
+                obj.hText_tauSlow.Enable = 'on';
                 obj.hButton_File.Enable = 'on';
                 obj.hEdit_Length.Enable = 'on';
                 obj.hEdit_Blocklen.Enable = 'on';
@@ -508,8 +584,7 @@ classdef OnsetDetection < handle
                 
                 obj.hText_Message_BG.Visible = 'off';
                 obj.hText_Message.Visible = 'off';
-                drawnow;
-                
+
             else
                 
                 vPatches = findall(obj.hFig, 'Type', 'patch');
@@ -537,9 +612,15 @@ classdef OnsetDetection < handle
                     obj.hButton_File.Enable = 'off';
                     obj.hText_Message_BG.Visible = 'on';
                     obj.hText_Message.Visible = 'on';
-                    drawnow;
                 end
                 
+                obj.hText_Length.Enable = 'off';
+                obj.hText_Blocklen.Enable = 'off';
+                obj.hText_Base.Enable = 'off';
+                obj.hText_P1.Enable = 'off';
+                obj.hText_P2.Enable = 'off';
+                obj.hText_tauFast.Enable = 'off';
+                obj.hText_tauSlow.Enable = 'off';
                 obj.hEdit_Length.Enable = 'off';
                 obj.hEdit_Blocklen.Enable = 'off';
                 obj.hButton_Left.Enable = 'off';
@@ -570,6 +651,8 @@ classdef OnsetDetection < handle
                 
             end
             
+            drawnow;
+            
         end
         
         function [] = callbackOpen(obj, ~, ~)
@@ -592,6 +675,8 @@ classdef OnsetDetection < handle
             obj.hText_File.Value = sprintf('%s', obj.sFileName);
             
             [obj.vSignal_orig, obj.nFs] = audioread(obj.sFileName);
+            
+            obj.hText_File.Tooltip = sprintf('%s', obj.sFileName);
             
             obj.cutAndFilter();
             obj.detectOnsets();
@@ -632,7 +717,6 @@ classdef OnsetDetection < handle
             
             switch source
                
-%                 case obj.hText_Message
                 
             end
             
@@ -660,9 +744,11 @@ classdef OnsetDetection < handle
                     
                     obj.nTimeWindow = str2double(obj.hEdit_Length.Value);
                     obj.hEdit_Length.Value = sprintf('%.2f', obj.nTimeWindow);
+                    
                     if isempty(obj.vSignal_orig)
                         return;
                     end
+                    
                     obj.cutAndFilter();
                     % Block length
                 case obj.hEdit_Blocklen
@@ -884,7 +970,7 @@ classdef OnsetDetection < handle
                         flags = DataMatrix(kk, :) > threshold;
                         
                         obj.mThresh_hist(iIn + kk - 1, :) = threshold;
-                        
+
                         %  check for transients
                         if sum(flags) >= 1
                             obj.vPeakLoc(end+1) = ((iBlock - 1) * obj.nParameter_BlockSize  + kk) / obj.nFs;
@@ -947,11 +1033,12 @@ classdef OnsetDetection < handle
             
             % Middle Plot: Energy Levels
             obj.hAx2.NextPlot = 'replace';
-            plot(obj.hAx2, SampleVec, obj.vEnergRatio_LP, 'Color', obj.mColor(1, :));
+            plot(obj.hAx2, SampleVec,obj.vEnergRatio_WB , 'Color', obj.mColor(1, :));
             obj.hAx2.NextPlot = 'add';
-            plot(obj.hAx2, SampleVec, obj.vEnergRatio_BP + 10, 'Color', obj.mColor(2, :));
-            plot(obj.hAx2, SampleVec,obj.vEnergRatio_HP + 20, 'Color', obj.mColor(3, :));
-            plot(obj.hAx2, SampleVec,obj.vEnergRatio_WB + 30, 'Color', obj.mColor(4, :));
+            plot(obj.hAx2, SampleVec, obj.vEnergRatio_LP + 10, 'Color', obj.mColor(2, :));
+            plot(obj.hAx2, SampleVec, obj.vEnergRatio_BP + 20, 'Color', obj.mColor(3, :));
+            plot(obj.hAx2, SampleVec,obj.vEnergRatio_HP + 30, 'Color', obj.mColor(4, :));
+            
             for iPeak = obj.vPeakLoc
                 plot(obj.hAx2, iPeak * [1, 1], [0; 40], 'Color', obj.vColor_Marker, ...
                     'LineStyle', ':');
