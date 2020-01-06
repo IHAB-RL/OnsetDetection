@@ -102,10 +102,11 @@ classdef OnsetDetection < handle
         % Parameters
         nParameter_BlockSize = 32;
         % influences threshold_raise
+        vParameter_ThreshBase = [4, 4, 4, 4]*2;
+        % influences decay of threshold_raise -> will be overwritten on
+        % fileopen
         vParameter_1 = [4, 4, 4, 4]*2;
-        % influences decay of threshold_raise
         vParameter_2 = log10([9.99, 9.98, 9.97, 9.99]);
-        vParameter_ThreshBase = [4, 4, 4, 4]*2-2;
         vParameter_TauFast = [1, 1, 1, 1];
         vParameter_TauSlow = [20, 20, 20, 20];
         
@@ -682,6 +683,10 @@ classdef OnsetDetection < handle
             
             obj.hText_File.Tooltip = sprintf('%s', obj.sFileName);
             
+            obj.vParameter_1 = [4, 4, 4, 4];
+            obj.vParameter_2 = [8192, 8192, 8192, 8192].^(-1/obj.nFs);%log10([9.99, 9.98, 9.97, 9.99]);
+            %nDecay = 4096^(-1/vFs(iFs))
+            
             obj.cutAndFilter();
             obj.detectOnsets();
             obj.plotData();
@@ -934,7 +939,7 @@ classdef OnsetDetection < handle
             
             running = true;
             
-            threshold_raise = [1, 1, 1, 1];
+            threshold_raise = [0, 0, 0, 0];
             
             obj.vPeakLoc = [];
             
@@ -954,19 +959,19 @@ classdef OnsetDetection < handle
                         obj.SVF_bandsplit(vBlockData, obj.nFs, 800, 1/sqrt(2), state1, state2);
                     
                     % energy ratio
-                    [obj.vEnergRatio_LP, obj.Zi_fast_lp, obj.Zi_slow_lp] = ...
-                        obj.FastToSlowEnergyMeasure(obj.vOut_LP, obj.nFs, obj.vParameter_TauFast(1), obj.vParameter_TauSlow(1), obj.Zi_fast_lp, obj.Zi_slow_lp);
-                    [obj.vEnergRatio_BP, obj.Zi_fast_bp, obj.Zi_slow_bp] = ...
-                        obj.FastToSlowEnergyMeasure(obj.vOut_BP, obj.nFs, obj.vParameter_TauFast(2), obj.vParameter_TauSlow(2 ), obj.Zi_fast_bp, obj.Zi_slow_bp);
-                    [obj.vEnergRatio_HP, obj.Zi_fast_hp, obj.Zi_slow_hp] = ...
-                        obj.FastToSlowEnergyMeasure(obj.vOut_HP, obj.nFs, obj.vParameter_TauFast(3), obj.vParameter_TauSlow(3), obj.Zi_fast_hp, obj.Zi_slow_hp);
                     [obj.vEnergRatio_WB, obj.Zi_fast_wb, obj.Zi_slow_wb] = ...
-                        obj.FastToSlowEnergyMeasure(vBlockData, obj.nFs, obj.vParameter_TauFast(4), obj.vParameter_TauSlow(4), obj.Zi_fast_wb, obj.Zi_slow_wb);
+                        obj.FastToSlowEnergyMeasure(vBlockData, obj.nFs, obj.vParameter_TauFast(1), obj.vParameter_TauSlow(1), obj.Zi_fast_wb, obj.Zi_slow_wb);
+                    [obj.vEnergRatio_LP, obj.Zi_fast_lp, obj.Zi_slow_lp] = ...
+                        obj.FastToSlowEnergyMeasure(obj.vOut_LP, obj.nFs, obj.vParameter_TauFast(2), obj.vParameter_TauSlow(2), obj.Zi_fast_lp, obj.Zi_slow_lp);
+                    [obj.vEnergRatio_BP, obj.Zi_fast_bp, obj.Zi_slow_bp] = ...
+                        obj.FastToSlowEnergyMeasure(obj.vOut_BP, obj.nFs, obj.vParameter_TauFast(3), obj.vParameter_TauSlow(3 ), obj.Zi_fast_bp, obj.Zi_slow_bp);
+                    [obj.vEnergRatio_HP, obj.Zi_fast_hp, obj.Zi_slow_hp] = ...
+                        obj.FastToSlowEnergyMeasure(obj.vOut_HP, obj.nFs, obj.vParameter_TauFast(4), obj.vParameter_TauSlow(4), obj.Zi_fast_hp, obj.Zi_slow_hp);
                     
-                    DataMatrix = [obj.vEnergRatio_LP, ...
+                    DataMatrix = [obj.vEnergRatio_WB, ...
+                        obj.vEnergRatio_LP, ...
                         obj.vEnergRatio_BP, ...
-                        obj.vEnergRatio_HP, ...
-                        obj.vEnergRatio_WB];
+                        obj.vEnergRatio_HP];
                     
                     for kk = 1 : obj.nParameter_BlockSize
                         
@@ -1086,7 +1091,7 @@ classdef OnsetDetection < handle
             
         end
         
-        function [EnergRatio, Zf_fast, Zf_slow] = ...
+        function [EnergRatio, Zi_fast, Zi_slow] = ...
                 FastToSlowEnergyMeasure(obj, inSig, fs, tau_fast_ms, tau_slow_ms, Zi_fast, Zi_slow)
             
             % params:
@@ -1119,10 +1124,11 @@ classdef OnsetDetection < handle
             RMS_alpha_fast = exp(-1/(tau_fast_ms*0.001*fs));
             RMS_alpha_slow = exp(-1/(tau_slow_ms*0.001*fs));
             
-            [y1,Zf_fast] = filter([1-RMS_alpha_fast],[1 -RMS_alpha_fast],inSig.*inSig,Zi_fast);
-            [y2,Zf_slow] = filter([1-RMS_alpha_slow],[1 -RMS_alpha_slow],inSig.*inSig,Zi_slow);
+            [y1,Zi_fast] = filter([1-RMS_alpha_fast],[1 -RMS_alpha_fast],inSig.*inSig,Zi_fast);
+            [y2,Zi_slow] = filter([1-RMS_alpha_slow],[1 -RMS_alpha_slow],inSig.*inSig,Zi_slow);
             
             EnergRatio = y1./y2;
+            1;
             
         end
         

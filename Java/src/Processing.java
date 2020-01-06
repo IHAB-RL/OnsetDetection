@@ -48,10 +48,6 @@ public class Processing {
         AudioInputStream audioInputStream;
         String filename = "F:/Dropbox/IHAB-RL/[2019] Onset Detection/Java/Recording 112534-110519a.wav";
 
-        String fileName2 = "threshold.txt";
-        File file = new File(fileName2);
-        file.delete();
-
         try
         {
             // Open the wav file specified as the first argument
@@ -78,7 +74,7 @@ public class Processing {
             bandSplit_MulIn = 1.0f / (1.0f + 2.0f * bandSplit_R * bandSplit_G + bandSplit_G * bandSplit_G);
 
             // [lp, bp, hp, wb][L, R]
-            energyRatio_Tau_Fast_ms = new float[][] {{3.0f, 3.0f}, {2.0f, 2.0f}, {1.0f, 1.0f}, {2.0f, 2.0f}};
+            energyRatio_Tau_Fast_ms = new float[][] {{1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f}};
             energyRatio_Tau_Slow_ms = new float[][] {{20.0f, 20.0f}, {20.0f, 20.0f}, {20.0f, 20.0f}, {20.0f, 20.0f}};
             energyRatio_State_Fast = new float[4][2];
             energyRatio_State_Slow = new float[4][2];
@@ -125,9 +121,11 @@ public class Processing {
             // [LP, BP, HP, WB]
             detectOnsets_ThreshBase = new float[] {8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate};
             detectOnsets_ThreshRaise = new float[] {1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate};
-            detectOnsets_Param1 = new float[] {8.0f * 8000 / samplingrate, 8.0f * 8000 / samplingrate, 8.0f * 8000 / samplingrate, 8.0f * 8000 / samplingrate};
-            detectOnsets_Decay = new float[] {0.999565488225982f * 14000 / samplingrate, 0.999130541287371f * 14000 / samplingrate,
-                    0.998695158311656f * 14000 / samplingrate, 0.999565488225982f * 14000 / samplingrate};
+            detectOnsets_Param1 = new float[] {4.0f, 4.0f, 4.0f, 4.0f};
+            detectOnsets_Decay = new float[] {(float) Math.pow(8129.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8129.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8129.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8129.0f, (-1.0f / samplingrate))};
 
             // "Bring signal up to standard"
             float[][] bufferFloat = new float[buffer[0].length][buffer.length];
@@ -166,21 +164,13 @@ public class Processing {
             }
             iIn += blocklen;
 
-            float data = onsetDetection(block_left, block_right);
-            if (data == 1.0f) {
+            float[] data = onsetDetection(block_left, block_right);
+            //if (data == 1.0f) {
                 onsets++;
-                String fileName2 = "threshold.txt";
-                try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName2, true));
 
+                //writeResult(data, "threshold.txt");
 
-                    writer.append(" " + iBlock + ",");
-
-
-                    writer.close();
-                } catch (Exception e) { }
-
-            }
+            //}
 
         }
 
@@ -188,23 +178,47 @@ public class Processing {
         //send(dataOut);
     }
 
-    protected float onsetDetection(float[] block_left, float[] block_right) {
+    protected void writeResult(float data, String filename) {
+        try {
+            File file = new File(filename);
+            file.delete();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
+            writer.append("" + data);
+            writer.close();
+        } catch (Exception e) { }
+    }
+
+    protected void writeResult(float[] data, String filename) {
+        try {
+            File file = new File(filename);
+            file.delete();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
+            for (int ival = 0; ival < data.length; ival++) {
+                writer.append("" + data[ival] + ",");
+            }
+            writer.close();
+        } catch (Exception e) { }
+    }
+
+    protected float[] onsetDetection(float[] block_left, float[] block_right) {
 
         // left
         float[][] bands_left = bandSplit(block_left, 0);
         // right
         float[][] bands_right = bandSplit(block_right, 1);
 
-        float onsets = detectOnsets(bands_left, bands_right, block_left, block_right);
+        float[] onsets = detectOnsets(bands_left, bands_right, block_left, block_right);
         return onsets;
 
     }
 
-    protected float detectOnsets(float[][] bands_left, float[][] bands_right, float[] block_left, float[] block_right) {
+    protected float[] detectOnsets(float[][] bands_left, float[][] bands_right, float[] block_left, float[] block_right) {
 
         float[][] flags = new float[4][2];
         float flag = 0.0f;
-        float[] threshold;// = addElementwise(this.detectOnsets_ThreshBase, this.detectOnsets_ThreshRaise);
+        float[] threshold = {0.0f, 0.0f, 0.0f, 0.0f};
         float rms = 0.5f * (rms(block_left) + rms(block_right));
         this.rms_rec = this.alpha * rms + (1.0f - this.alpha) * this.rms_rec;
 
@@ -221,7 +235,7 @@ public class Processing {
 
             threshold = addElementwise(this.detectOnsets_ThreshBase, this.detectOnsets_ThreshRaise);
 
-            float max = 0;
+            float max = 0.0f;
 
 
             /**
@@ -277,16 +291,17 @@ public class Processing {
                 float[] exceed = new float[] {max, max, max, max};
 
                 //this.detectOnsets_ThreshRaise = addElementwise(this.detectOnsets_ThreshRaise, exceed);
-                addArray(this.detectOnsets_ThreshRaise, exceed);
+                addToArray(this.detectOnsets_ThreshRaise, exceed);
 
                 //System.out.println("Exceed: " + max);
             }
             //this.detectOnsets_ThreshRaise = multiplyElementwise(
             //        this.detectOnsets_ThreshRaise, this.detectOnsets_Decay);
-            multiplyArray(detectOnsets_ThreshRaise, detectOnsets_Decay);
+            multiplyWithArray(detectOnsets_ThreshRaise, detectOnsets_Decay);
         }
 
-        return flag;
+        return threshold;
+        //return flag;
     }
 
     protected float rms(float[] signal) {
@@ -306,13 +321,13 @@ public class Processing {
         return out;
     }
 
-    protected void addArray(float[] a, float[] b) {
+    protected void addToArray(float[] a, float[] b) {
         for (int iCol = 0; iCol < a.length; iCol++) {
             a[iCol] += b[iCol];
         }
     }
 
-    protected void multiplyArray(float[] a, float[] b) {
+    protected void multiplyWithArray(float[] a, float[] b) {
         for (int iCol = 0; iCol < a.length; iCol++) {
             a[iCol] *= b[iCol];
         }
@@ -326,13 +341,13 @@ public class Processing {
         return out;
     }
 
-    /*protected float[] addElementwise(float[] a, float[] b) {
+    protected float[] addElementwise(float[] a, float[] b) {
         float[] out = new float[a.length];
         for (int iCol = 0; iCol < a.length; iCol++) {
             out[iCol] = a[iCol] + b[iCol];
         }
         return out;
-    }*/
+    }
 
     protected float[][] bandSplit(float[] signal, int chan) {
 
