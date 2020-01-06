@@ -106,7 +106,9 @@ classdef OnsetDetection < handle
         % influences decay of threshold_raise -> will be overwritten on
         % fileopen
         vParameter_1 = [4, 4, 4, 4]*2;
-        vParameter_2 = log10([9.99, 9.98, 9.97, 9.99]);
+        vDecayConst = [8192, 8192, 8192, 8192];
+        vParameter_2;
+       
         vParameter_TauFast = [1, 1, 1, 1];
         vParameter_TauSlow = [20, 20, 20, 20];
         
@@ -348,28 +350,28 @@ classdef OnsetDetection < handle
             obj.hEdit_P2_WB = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_WB.Position = [obj.nFillControl_Horizontal, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
-            obj.hEdit_P2_WB.Value = sprintf('%.2f', obj.vParameter_2(1));
+            obj.hEdit_P2_WB.Value = sprintf('%.2f', obj.vDecayConst(1));
             obj.hEdit_P2_WB.ValueChangedFcn = @obj.callbackValueChanged;
             obj.hEdit_P2_WB.FontColor = obj.mColor(1, :);
             
             obj.hEdit_P2_LP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_LP.Position = [2 * obj.nFillControl_Horizontal + obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
-            obj.hEdit_P2_LP.Value = sprintf('%.2f', obj.vParameter_2(2));
+            obj.hEdit_P2_LP.Value = sprintf('%.2f', obj.vDecayConst(2));
             obj.hEdit_P2_LP.ValueChangedFcn = @obj.callbackValueChanged;
             obj.hEdit_P2_LP.FontColor = obj.mColor(2, :);
             
             obj.hEdit_P2_BP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_BP.Position = [3 * obj.nFillControl_Horizontal + 2 * obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
-            obj.hEdit_P2_BP.Value = sprintf('%.2f', obj.vParameter_2(3));
+            obj.hEdit_P2_BP.Value = sprintf('%.2f', obj.vDecayConst(3));
             obj.hEdit_P2_BP.ValueChangedFcn = @obj.callbackValueChanged;
             obj.hEdit_P2_BP.FontColor = obj.mColor(3, :);
             
             obj.hEdit_P2_HP = uieditfield(obj.hPanel_Controls);
             obj.hEdit_P2_HP.Position = [4 * obj.nFillControl_Horizontal + 3 * obj.nEditControls_Width, ...
                 3 * obj.nFillControl_Vertical + 2 * obj.nEditControls_Height, obj.nEditControls_Width, obj.nEditControls_Height];
-            obj.hEdit_P2_HP.Value = sprintf('%.2f', obj.vParameter_2(4));
+            obj.hEdit_P2_HP.Value = sprintf('%.2f', obj.vDecayConst(4));
             obj.hEdit_P2_HP.ValueChangedFcn = @obj.callbackValueChanged;
             obj.hEdit_P2_HP.FontColor = obj.mColor(4, :);
             
@@ -683,15 +685,20 @@ classdef OnsetDetection < handle
             
             obj.hText_File.Tooltip = sprintf('%s', obj.sFileName);
             
-            obj.vParameter_1 = [4, 4, 4, 4];
-            obj.vParameter_2 = [8192, 8192, 8192, 8192].^(-1/obj.nFs);%log10([9.99, 9.98, 9.97, 9.99]);
-            %nDecay = 4096^(-1/vFs(iFs))
+            obj.calculateConstants();
             
             obj.cutAndFilter();
             obj.detectOnsets();
             obj.plotData();
             
             obj.setEditable(true)
+            
+        end
+        
+        function [] = calculateConstants(obj, ~, ~)
+           
+            obj.vParameter_1 = [4, 4, 4, 4];
+            obj.vParameter_2 = obj.vDecayConst.^(-1/obj.nFs);
             
         end
         
@@ -797,17 +804,17 @@ classdef OnsetDetection < handle
                     obj.hEdit_P1_HP.Value = sprintf('%.2f', obj.vParameter_1(4));
                     % Parameter 2
                 case obj.hEdit_P2_WB
-                    obj.vParameter_2(1) = str2double(obj.hEdit_P2_WB.Value);
-                    obj.hEdit_P2_WB.Value = sprintf('%.2f', obj.vParameter_2(1));
+                    obj.vDecayConst(1) = str2double(obj.hEdit_P2_WB.Value);
+                    obj.hEdit_P2_WB.Value = sprintf('%.2f', obj.vDecayConst(1));
                 case obj.hEdit_P2_LP
-                    obj.vParameter_2(2) = str2double(obj.hEdit_P2_LP.Value);
-                    obj.hEdit_P2_LP.Value = sprintf('%.2f', obj.vParameter_2(2));
+                    obj.vDecayConst(2) = str2double(obj.hEdit_P2_LP.Value);
+                    obj.hEdit_P2_LP.Value = sprintf('%.2f', obj.vDecayConst(2));
                 case obj.hEdit_P2_BP
-                    obj.vParameter_2(3) = str2double(obj.hEdit_P2_BP.Value);
-                    obj.hEdit_P2_BP.Value = sprintf('%.2f', obj.vParameter_2(3));
+                    obj.vDecayConst(3) = str2double(obj.hEdit_P2_BP.Value);
+                    obj.hEdit_P2_BP.Value = sprintf('%.2f', obj.vDecayConst(3));
                 case obj.hEdit_P2_HP
-                    obj.vParameter_2(4) = str2double(obj.hEdit_P2_HP.Value);
-                    obj.hEdit_P2_HP.Value = sprintf('%.2f', obj.vParameter_2(4));
+                    obj.vDecayConst(4) = str2double(obj.hEdit_P2_HP.Value);
+                    obj.hEdit_P2_HP.Value = sprintf('%.2f', obj.vDecayConst(4));
                     % Tau Fast
                 case obj.hEdit_tauFast_WB
                     obj.vParameter_TauFast(1) = str2double(obj.hEdit_tauFast_WB.Value);
@@ -837,6 +844,7 @@ classdef OnsetDetection < handle
                     
             end
             
+            obj.calculateConstants();
             obj.detectOnsets();
             obj.plotData();
             
@@ -1128,7 +1136,7 @@ classdef OnsetDetection < handle
             [y2,Zi_slow] = filter([1-RMS_alpha_slow],[1 -RMS_alpha_slow],inSig.*inSig,Zi_slow);
             
             EnergRatio = y1./y2;
-            1;
+            
             
         end
         

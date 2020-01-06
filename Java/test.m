@@ -26,4 +26,4 @@ hFig1 = figure();
 plot(signal, 'g');
 hold on;
 plot(out, 'k');
-plot(out_filt, 'r:');
+plot(out_filt, 'r--');

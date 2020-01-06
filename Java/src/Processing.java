@@ -26,14 +26,14 @@ public class Processing {
     private double bandSplit_MulIn;
 
     // [lp, bp, hp][L, R]
-    private float[][] energyRatio_Tau_Fast_ms;
-    private float[][] energyRatio_Tau_Slow_ms;
+    private float[] energyRatio_Tau_Fast_ms;
+    private float[] energyRatio_Tau_Slow_ms;
     private float[][] energyRatio_State_Fast;
     private float[][] energyRatio_State_Slow;
-    private float[][] energyRatio_Alpha_Fast;
-    private float[][] energyRatio_Alpha_Slow;
-    private float[][] energyRatio_Alpha_Fast_MinusOne;
-    private float[][] energyRatio_Alpha_Slow_MinusOne;
+    private float[] energyRatio_Alpha_Fast;
+    private float[] energyRatio_Alpha_Slow;
+    private float[] energyRatio_Alpha_Fast_MinusOne;
+    private float[] energyRatio_Alpha_Slow_MinusOne;
     // [LP, BP, HP, WB]
     private float[] detectOnsets_ThreshBase;
     private float[] detectOnsets_ThreshRaise;
@@ -74,58 +74,38 @@ public class Processing {
             bandSplit_MulIn = 1.0f / (1.0f + 2.0f * bandSplit_R * bandSplit_G + bandSplit_G * bandSplit_G);
 
             // [lp, bp, hp, wb][L, R]
-            energyRatio_Tau_Fast_ms = new float[][] {{1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f}};
-            energyRatio_Tau_Slow_ms = new float[][] {{20.0f, 20.0f}, {20.0f, 20.0f}, {20.0f, 20.0f}, {20.0f, 20.0f}};
+            energyRatio_Tau_Fast_ms = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
+            energyRatio_Tau_Slow_ms = new float[] {20.0f, 20.0f, 20.0f, 20.0f};
             energyRatio_State_Fast = new float[4][2];
             energyRatio_State_Slow = new float[4][2];
-            energyRatio_Alpha_Fast = new float[][] {
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3][1] * 0.001 * samplingrate)))}
-            };
-            energyRatio_Alpha_Slow = new float[][] {
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][1] * 0.001 * samplingrate)))},
-                    {(float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][0] * 0.001 * samplingrate))),
-                            (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][1] * 0.001 * samplingrate)))}
-            };
-            energyRatio_Alpha_Fast_MinusOne = new float[][] {
-                    {(float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0][0] * 0.001 * samplingrate))),
-                            (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0][1] * 0.001 * samplingrate)))},
-                    {(float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1][0] * 0.001 * samplingrate))),
-                            (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1][1] * 0.001 * samplingrate)))},
-                    {(float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2][0] * 0.001 * samplingrate))),
-                            (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2][1] * 0.001 * samplingrate)))},
-                    {(float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3][0] * 0.001 * samplingrate))),
-                            (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3][1] * 0.001 * samplingrate)))}
-            };
-            energyRatio_Alpha_Slow_MinusOne = new float[][] {
-                    {(float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0][0] * 0.001 * samplingrate)),
-                            (float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0][1] * 0.001 * samplingrate))},
-                    {(float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1][0] * 0.001 * samplingrate)),
-                            (float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1][1] * 0.001 * samplingrate))},
-                    {(float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][0] * 0.001 * samplingrate)),
-                            (float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][1] * 0.001 * samplingrate))},
-                    {(float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][0] * 0.001 * samplingrate)),
-                            (float) - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2][1] * 0.001 * samplingrate))}
-            };
+            energyRatio_Alpha_Fast = new float[] {
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3] * 0.001 * samplingrate)))};
+            energyRatio_Alpha_Slow = new float[] {
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2] * 0.001 * samplingrate))),
+                    (float) (1.0f - Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2] * 0.001 * samplingrate)))};
+            energyRatio_Alpha_Fast_MinusOne = new float[] {
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[0] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[1] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[2] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Fast_ms[3] * 0.001 * samplingrate)))};
+            energyRatio_Alpha_Slow_MinusOne = new float[] {
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[0] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[1] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2] * 0.001 * samplingrate))),
+                    (float) (- Math.exp(-1.0f / (this.energyRatio_Tau_Slow_ms[2] * 0.001 * samplingrate)))};
             // [LP, BP, HP, WB]
-            detectOnsets_ThreshBase = new float[] {8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate, 8.0f * 16000 / samplingrate};
-            detectOnsets_ThreshRaise = new float[] {1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate, 1.0f * 16000 / samplingrate};
+            detectOnsets_ThreshBase = new float[] {8.0f, 8.0f, 8.0f, 8.0f};
+            detectOnsets_ThreshRaise = new float[] {0.0f, 0.0f, 0.0f, 0.0f};
             detectOnsets_Param1 = new float[] {4.0f, 4.0f, 4.0f, 4.0f};
-            detectOnsets_Decay = new float[] {(float) Math.pow(8129.0f, (-1.0f / samplingrate)),
-                    (float) Math.pow(8129.0f, (-1.0f / samplingrate)),
-                    (float) Math.pow(8129.0f, (-1.0f / samplingrate)),
-                    (float) Math.pow(8129.0f, (-1.0f / samplingrate))};
+            detectOnsets_Decay = new float[] {(float) Math.pow(8192.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8192.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8192.0f, (-1.0f / samplingrate)),
+                    (float) Math.pow(8192.0f, (-1.0f / samplingrate))};
 
             // "Bring signal up to standard"
             float[][] bufferFloat = new float[buffer[0].length][buffer.length];
@@ -143,6 +123,10 @@ public class Processing {
     }
 
     protected void process(float[][] buffer) {
+
+        String filename = "threshold.txt";
+        File file = new File(filename);
+        file.delete();
 
         int onsets = 0;
 
@@ -164,13 +148,13 @@ public class Processing {
             }
             iIn += blocklen;
 
-            float[] data = onsetDetection(block_left, block_right);
-            //if (data == 1.0f) {
+            float data = onsetDetection(block_left, block_right);
+            if (data == 1.0f) {
                 onsets++;
 
-                //writeResult(data, "threshold.txt");
+                writeResult(iBlock, filename);
 
-            //}
+            }
 
         }
 
@@ -180,16 +164,13 @@ public class Processing {
 
     protected void writeResult(float data, String filename) {
         try {
-            File file = new File(filename);
-            file.delete();
-
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
-            writer.append("" + data);
+            writer.append(data + ",");
             writer.close();
         } catch (Exception e) { }
     }
 
-    protected void writeResult(float[] data, String filename) {
+    protected void writeSequence(float[] data, String filename) {
         try {
             File file = new File(filename);
             file.delete();
@@ -202,22 +183,20 @@ public class Processing {
         } catch (Exception e) { }
     }
 
-    protected float[] onsetDetection(float[] block_left, float[] block_right) {
-
+    protected float onsetDetection(float[] block_left, float[] block_right) {
         // left
         float[][] bands_left = bandSplit(block_left, 0);
         // right
         float[][] bands_right = bandSplit(block_right, 1);
 
-        float[] onsets = detectOnsets(bands_left, bands_right, block_left, block_right);
-        return onsets;
-
+        return detectOnsets(bands_left, bands_right, block_left, block_right);
     }
 
-    protected float[] detectOnsets(float[][] bands_left, float[][] bands_right, float[] block_left, float[] block_right) {
+    protected float detectOnsets(float[][] bands_left, float[][] bands_right, float[] block_left, float[] block_right) {
 
         float[][] flags = new float[4][2];
         float flag = 0.0f;
+        boolean onsetFound = false;
         float[] threshold = {0.0f, 0.0f, 0.0f, 0.0f};
         float rms = 0.5f * (rms(block_left) + rms(block_right));
         this.rms_rec = this.alpha * rms + (1.0f - this.alpha) * this.rms_rec;
@@ -234,74 +213,47 @@ public class Processing {
         for (int iSample = 0; iSample < blocklen; iSample++) {
 
             threshold = addElementwise(this.detectOnsets_ThreshBase, this.detectOnsets_ThreshRaise);
+            flags = new float[4][2];
 
-            float max = 0.0f;
-
-
-            /**
-             *
-             *  PROBLEM THRESHOLD GOES TO INFINITY! BLOCKLENGTH SEEMS TO BE SPECIFIC!
-             *
-             */
-
-            if (rms > rms_rec) {
+            if (!onsetFound) {
 
                 if (energy_lp_left[iSample] > threshold[0]) {
                     flags[0][0] = 1.0f;
-                    max += (energy_lp_left[iSample] - threshold[0]);
                 }
                 if (energy_bp_left[iSample] > threshold[1]) {
                     flags[1][0] = 1.0f;
-                    max += (energy_bp_left[iSample] - threshold[1]);
                 }
                 if (energy_hp_left[iSample] > threshold[2]) {
                     flags[2][0] = 1.0f;
-                    max += (energy_hp_left[iSample] - threshold[2]);
                 }
                 if (energy_wb_left[iSample] > threshold[3]) {
                     flags[3][0] = 1.0f;
-                    max += (energy_wb_left[iSample] - threshold[3]);
                 }
                 if (energy_lp_right[iSample] > threshold[0]) {
                     flags[0][1] = 1.0f;
-                    max += (energy_lp_left[iSample] - threshold[0]);
                 }
                 if (energy_bp_right[iSample] > threshold[1]) {
                     flags[1][1] = 1.0f;
-                    max += (energy_bp_left[iSample] - threshold[1]);
                 }
                 if (energy_hp_right[iSample] > threshold[2]) {
                     flags[2][1] = 1.0f;
-                    max += (energy_hp_left[iSample] - threshold[2]);
                 }
                 if (energy_wb_right[iSample] > threshold[3]) {
                     flags[3][1] = 1.0f;
-                    max += (energy_wb_left[iSample] - threshold[3]);
                 }
 
+                // If more than one band has registered a peak then return 1, else 0
+                if ((flags[0][0] + flags[1][0] + flags[2][0] + flags[3][0] +
+                        flags[0][1] + flags[1][1] + flags[2][1] + flags[3][1]) > 1.0f) {
+                    flag = 1.0f;
+                    onsetFound = true;
+                    this.detectOnsets_ThreshRaise = multiplyElementwise(
+                            detectOnsets_Param1, threshold);
+                }
             }
-
-            // If more than one band has registered a peak then return 1, else 0
-            if ((flags[0][0] + flags[1][0] + flags[2][0] + flags[3][0] +
-                    flags[0][1] + flags[1][1] + flags[2][1] + flags[3][1]) > 1.0f) {
-                flag = 1.0f;
-                this.detectOnsets_ThreshRaise = multiplyElementwise(
-                        detectOnsets_Param1, threshold);
-
-                float[] exceed = new float[] {max, max, max, max};
-
-                //this.detectOnsets_ThreshRaise = addElementwise(this.detectOnsets_ThreshRaise, exceed);
-                addToArray(this.detectOnsets_ThreshRaise, exceed);
-
-                //System.out.println("Exceed: " + max);
-            }
-            //this.detectOnsets_ThreshRaise = multiplyElementwise(
-            //        this.detectOnsets_ThreshRaise, this.detectOnsets_Decay);
             multiplyWithArray(detectOnsets_ThreshRaise, detectOnsets_Decay);
         }
-
-        return threshold;
-        //return flag;
+        return flag;
     }
 
     protected float rms(float[] signal) {
@@ -418,7 +370,7 @@ public class Processing {
         return ratio;
     }
 
-    protected float[] filter(float[] signal, float[][] coeff_b, float[][] coeff_a, int band, int chan, int fast_slow) {
+    protected float[] filter(float[] signal, float[] coeff_b, float[] coeff_a, int band, int chan, int fast_slow) {
 
         /**
          *  single channel IIR filter
@@ -441,13 +393,13 @@ public class Processing {
 
         if (fast_slow == 0) {
             for (int iSample = 0; iSample < signal.length; iSample++) {
-                tmp = coeff_b[band][chan] * signal[iSample] - coeff_a[band][chan] * energyRatio_State_Fast[band][chan];
+                tmp = coeff_b[band] * signal[iSample] - coeff_a[band] * energyRatio_State_Fast[band][chan];
                 output[iSample] = tmp;
                 energyRatio_State_Fast[band][chan] = tmp;
             }
         } else{
             for (int iSample = 0; iSample < signal.length; iSample++) {
-                tmp = coeff_b[band][chan] * signal[iSample] - coeff_a[band][chan] * energyRatio_State_Slow[band][chan];
+                tmp = coeff_b[band] * signal[iSample] - coeff_a[band] * energyRatio_State_Slow[band][chan];
                 output[iSample] = tmp;
                 energyRatio_State_Slow[band][chan] = tmp;
             }
