@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c77011be-a8a7-4dae-a912-7bcb8b77a7a8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OnsetDetection.m" beforeDir="false" afterPath="$PROJECT_DIR$/../OnsetDetection.m" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1VqFfEk0sQVXHQ0c3QVeyl5fFnA" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Dropbox\IHAB-RL\[2019] Onset Detection\Java\src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="OnsetDetection" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="OnsetDetection" />
+      <module name="OnsetDetection" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.OnsetDetection" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c77011be-a8a7-4dae-a912-7bcb8b77a7a8" name="Default Changelist" comment="" />
+      <created>1577972819826</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1577972819826</updated>
+      <workItem from="1577972822464" duration="22830000" />
+      <workItem from="1578062487151" duration="5608000" />
+      <workItem from="1578298371410" duration="1538000" />
+      <workItem from="1578303016265" duration="449000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="657" y="323" width="606" height="541" key="#Customize_Data_Views" timestamp="1578042063931">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="657" y="323" width="606" height="541" key="#Customize_Data_Views/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578042063931" />
+    <state x="657" y="204" key="#Unnamed" timestamp="1577973030969">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="657" y="204" key="#Unnamed/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1577973030969" />
+    <state x="790" y="435" key="#com.intellij.debugger.actions.ViewTextAction" timestamp="1578041671282">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="790" y="435" key="#com.intellij.debugger.actions.ViewTextAction/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578041671282" />
+    <state x="392" y="201" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577973163931">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="392" y="201" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1577973163931" />
+    <state x="505" y="335" key="#org.jetbrains.debugger.memory.view.InstancesWindow" timestamp="1578042082011">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="505" y="335" key="#org.jetbrains.debugger.memory.view.InstancesWindow/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578042082011" />
+    <state x="880" y="333" key="#xdebugger.XInspectDialog" timestamp="1578041678938">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="880" y="333" key="#xdebugger.XInspectDialog/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578041678938" />
+    <state width="532" height="466" key="DebuggerActiveHint" timestamp="1578298874101">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="532" height="466" key="DebuggerActiveHint/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578298874101" />
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="321" key="GridCell.Tab.0.center" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.center/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="321" key="GridCell.Tab.0.left" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.left/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="321" key="GridCell.Tab.0.right" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.right/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="396" key="GridCell.Tab.1.bottom" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="396" key="GridCell.Tab.1.bottom/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="396" key="GridCell.Tab.1.center" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="396" key="GridCell.Tab.1.center/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="396" key="GridCell.Tab.1.left" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="396" key="GridCell.Tab.1.left/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state width="1877" height="396" key="GridCell.Tab.1.right" timestamp="1578300288217">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="396" key="GridCell.Tab.1.right/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578300288217" />
+    <state x="661" y="404" key="com.intellij.ide.util.TipDialog" timestamp="1577972824705">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="661" y="404" key="com.intellij.ide.util.TipDialog/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1577972824705" />
+    <state x="769" y="497" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1578303466886">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="769" y="497" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1578303466886" />
+    <state x="616" y="270" key="run.anything.popup" timestamp="1577973152767">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="616" y="270" key="run.anything.popup/0.0.1920.1160/-1440.-595.1440.2560@0.0.1920.1160" timestamp="1577973152767" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="buffer[1]" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

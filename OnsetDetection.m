@@ -131,7 +131,7 @@ classdef OnsetDetection < handle
         vOut_LP;
         vOut_BP;
         vOut_HP;
-       
+        
     end
     
     
@@ -676,6 +676,10 @@ classdef OnsetDetection < handle
             
             [obj.vSignal_orig, obj.nFs] = audioread(obj.sFileName);
             
+            if size(obj.vSignal_orig, 2) > 1
+               obj.vSignal_orig = (obj.vSignal_orig(:, 1) + obj.vSignal_orig(:, 2))/2; 
+            end
+            
             obj.hText_File.Tooltip = sprintf('%s', obj.sFileName);
             
             obj.cutAndFilter();
@@ -707,7 +711,7 @@ classdef OnsetDetection < handle
             nOrder_HP = 4;
             vFreq_HP = [0.01, 0.02];
             [vB, vA] = butter(nOrder_HP, vFreq_HP);
-            obj.vSignal = filter(vB, vA, obj.vSignal);
+            %obj.vSignal = filter(vB, vA, obj.vSignal);
             
             obj.setEditable(true)
  

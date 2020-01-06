@@ -2,5 +2,6 @@
 *.wav
 *.psd
 *.asv
+*.mat
 /legacy/*
 /media/*
